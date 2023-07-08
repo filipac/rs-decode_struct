@@ -42,12 +42,14 @@ fn main() {
 
     let addr = bech32::encode(&decoded.owner.to_address());
 
-    let final_decoded = DecodedAdvertiseSpace {
-        owner: addr,
-        paid_amount: decoded.paid_amount.to_u64().unwrap(),
-        paid_until: decoded.paid_until.to_u64().unwrap(),
-        is_new: decoded.is_new,
-    };
-
-    print!("{}", serde_json::to_string(&final_decoded).unwrap());
+    print!(
+        "{}",
+        serde_json::to_string(&DecodedAdvertiseSpace {
+            owner: addr,
+            paid_amount: decoded.paid_amount.to_u64().unwrap(),
+            paid_until: decoded.paid_until.to_u64().unwrap(),
+            is_new: decoded.is_new,
+        })
+        .unwrap()
+    );
 }
