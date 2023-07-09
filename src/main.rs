@@ -25,31 +25,36 @@ struct DecodedAdvertiseSpace {
     is_new: bool,
 }
 
+const INVALID_BASE64: &str = "no base64 encoded string";
+const MISSING_BASE64: &str = "missing base64 encoded string";
+
 fn main() {
-    // first argument is base64 encoded string
-    let base64_encoded = std::env::args().nth(1).expect("no base64 encoded string");
-    // transform base64 encoded string to bytes
-    let bytes = general_purpose::STANDARD
+    DebugApi::dummy();
+
+    let base64_encoded = std::env::args().nth(1).expect(MISSING_BASE64);
+    let struct_bytes = general_purpose::STANDARD
         .decode(base64_encoded)
-        .expect("invalid base64");
+        .expect(INVALID_BASE64);
 
-    #[allow(unused_variables)]
-    let api = DebugApi::dummy();
-
-    // decode bytes to AdvertiseSpace struct
     let decoded: AdvertiseSpace<DebugApi> =
-        AdvertiseSpace::top_decode_or_handle_err(bytes, DefaultErrorHandler).unwrap();
+        AdvertiseSpace::top_decode_or_handle_err(struct_bytes, DefaultErrorHandler).unwrap();
 
-    let addr = bech32::encode(&decoded.owner.to_address());
+    print!("{}", &decoded.to_decoded_struct().to_json());
+}
 
-    print!(
-        "{}",
-        serde_json::to_string(&DecodedAdvertiseSpace {
-            owner: addr,
-            paid_amount: decoded.paid_amount.to_u64().unwrap(),
-            paid_until: decoded.paid_until.to_u64().unwrap(),
-            is_new: decoded.is_new,
-        })
-        .unwrap()
-    );
+impl AdvertiseSpace<DebugApi> {
+    fn to_decoded_struct(&self) -> DecodedAdvertiseSpace {
+        DecodedAdvertiseSpace {
+            owner: bech32::encode(&self.owner.to_address()),
+            paid_amount: self.paid_amount.to_u64().unwrap(),
+            paid_until: self.paid_until.to_u64().unwrap(),
+            is_new: self.is_new,
+        }
+    }
+}
+
+impl DecodedAdvertiseSpace {
+    fn to_json(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
 }

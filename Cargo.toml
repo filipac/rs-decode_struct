@@ -1,6 +1,6 @@
 [package]
 name = "decode_struct"
-description = "A simple script to decode a Struct from binary to base64
+description = "A simple script to decode a Struct from binary to base64"
 version = "0.1.0"
 edition = "2021"
 
