@@ -35,8 +35,14 @@ fn main() {
 
         if !file.exists() {
             println!("file {} does not exist", file.display());
-            run_build_script(arch);
         }
+
+        // delete the file if it exists
+        if file.exists() {
+            std::fs::remove_file(&file).unwrap();
+        }
+
+        run_build_script(arch);
 
         std::fs::copy(&file, &new_name).unwrap();
     }

@@ -4,6 +4,8 @@ description = "A simple script to decode a Struct from binary to base64"
 version = "0.1.0"
 edition = "2021"
 
+# default-run: decode_struct
+
 [[bin]]
 name = "decode_struct"
 path = "src/main.rs"
